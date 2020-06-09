@@ -83,7 +83,7 @@ function DisplayArray(h, w; background=' ')
 
     context = DisplayRow[]
     for i=1:h
-        push!(context, DisplayRow(w, background, fill(background, w)))
+        push!(context, DisplayRow(w, background=background))
     end
 
     return DisplayArray(
@@ -95,9 +95,4 @@ end
 
 Base.size(array::DisplayArray) = array.size
 
-function render(io, array::DisplayArray)
-    for row in array.context
-        join(io, row.context)
-        println(io)
-    end
-end
+render(io::IO, array::DisplayArray) = (for row in array.context render(io, row) end)
