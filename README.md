@@ -1,1 +1,1 @@
-# DisplayStructure.jl
+# DisplayStructure
