@@ -23,6 +23,8 @@ end
 
 Base.size(array::DisplayArray) = array.size
 
+Base.lastindex(array::DisplayArray, d::Int) = size(array)[d]
+
 function Base.setindex!(
     array::DisplayArray,
     c::Char,
