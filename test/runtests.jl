@@ -4,6 +4,8 @@ using Test
 
 @testset "DisplayStructure.jl" begin
 
+    include("util.jl")
+    include("display_row.jl")
     include("display_array.jl")
 
 end
