@@ -23,23 +23,12 @@ end
 
 Base.size(array::DisplayArray) = array.size
 
-render(io::IO, array::DisplayArray) = (for row in array.context render(io, row) end)
-
 function Base.setindex!(
     array::DisplayArray,
     c::Char,
     display_row::Int, display_col::Int
 )
     array.context[display_row][display_col] = c
-end
-
-function pad2width(str::String, width::Int; background=' ')
-    str_width = textwidth(str)
-    (width < str_width) && (throw(BoundsError))
-
-    str *= background^(width-str_width)
-
-    return str
 end
 
 function Base.setindex!(
@@ -58,3 +47,5 @@ function Base.setindex!(
         array.context[start+i-1][display_col_range] = s
     end
 end
+
+render(io::IO, array::DisplayArray) = (for row in array.context render(io, row) end)
