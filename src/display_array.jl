@@ -48,4 +48,6 @@ function Base.setindex!(
     end
 end
 
-render(io::IO, array::DisplayArray) = (for row in array.context render(io, row) end)
+function render(io::IO, array::DisplayArray; style=Symbol[], color=(-1, -1, -1))
+    for row in array.context render(io, row, style=style, color=color) end
+end
