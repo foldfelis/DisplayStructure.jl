@@ -7,7 +7,10 @@ struct DisplayArray
 end
 
 function DisplayArray(h, w; background=' ')
-    (textwidth(background) != 1) && (throw("Bad background char"))
+    (textwidth(background) != 1) && (throw(
+        "Invalid background character. " *
+        "Text width of background character must be 1."
+    ))
 
     content = DisplayRow[]
     for i=1:h
@@ -39,17 +42,16 @@ function Base.setindex!(
     display_row_range::UnitRange{Int64}, display_col_range::UnitRange{Int64}
 )
     split_str = split(str, '\n')
-    start, stop = display_row_range.start, display_row_range.stop
-    (stop != start + length(split_str) - 1) && (throw(DimensionMismatch))
-    (stop > size(array)[1]) && (throw(BoundsError))
+    length(split_str) == length(display_row_range) || throw(DimensionMismatch)
+    (display_row_range.stop > size(array)[1]) && (throw(BoundsError))
 
-    for (i, s) in enumerate(split_str)
-        width = display_col_range.stop-display_col_range.start+1
-        s = pad2width(string(s), width, background=array.background)
-        array.content[start+i-1][display_col_range] = s
+    width = length(display_col_range)
+    for (i, s) in zip(display_row_range, split_str)
+        s = padding(s, width, background=array.background)
+        array.content[i][display_col_range] = s
     end
 end
 
 function render(io::IO, array::DisplayArray; style=Symbol[], color=(-1, -1, -1))
-    for row in array.content render(io, row, style=style, color=color) end
+    foreach(row->render(io, row, style=style, color=color), array.content)
 end

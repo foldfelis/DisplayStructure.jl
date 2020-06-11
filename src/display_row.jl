@@ -7,7 +7,10 @@ struct DisplayRow
 end
 
 function DisplayRow(len::Int; background=' ')
-    (textwidth(background) != 1) && (throw("Bad background char"))
+    isone(textwidth(background)) || (throw(
+        "Invalid background character. " *
+        "Text width of background character must be 1."
+    ))
 
     return DisplayRow(len, background, fill(background, len))
 end
@@ -17,7 +20,7 @@ Base.length(row::DisplayRow) = row.size
 Base.lastindex(row::DisplayRow) = row.size
 
 function get_element_index(row::DisplayRow, display_index::Int)
-    (textwidth(join(row.content)) < display_index) && (throw(BoundsError))
+    (mapreduce(textwidth, +, row.content) < display_index) && (throw(BoundsError))
 
     accumulate_width = index = pre = post = 0
     for c in row.content
@@ -58,7 +61,7 @@ end
 
 function Base.setindex!(row::DisplayRow, str::String, display_range::UnitRange{Int64})
     start, stop = display_range.start, display_range.stop
-    (stop != start + textwidth(str) - 1) && (throw(DimensionMismatch))
+    (length(display_range) == textwidth(str)) || (throw(DimensionMismatch))
 
     i1, pre, _ = get_element_index(row, start)
     i2, _, post = get_element_index(row, stop)
@@ -71,5 +74,5 @@ function Base.setindex!(row::DisplayRow, str::String, display_range::UnitRange{I
 end
 
 function render(io::IO, row::DisplayRow; style=Symbol[], color=(-1, -1, -1))
-    println_style(io, join(row.content), style, color)
+    println_style(io, row.content, style, color)
 end
