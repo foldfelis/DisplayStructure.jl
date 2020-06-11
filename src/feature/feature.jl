@@ -1,14 +1,60 @@
-export line, area
+export Shape
+export Line, DashLine, Rectangle
 
-line(len::Int; background=' ') = DisplayRow(len, background, fill(Char(0x2500), len))
+abstract type Shape end
 
-function area(h::Int, w::Int; background=' ', border=true)
+struct Line <: Shape
+    len::Int
+    background::Char
+end
+
+Line(len::Int; background=' ') = Line(len, background)
+
+function DisplayRow(line::Line)
+    fill_char = Char(0x2500)
+
+    return DisplayRow(
+        line.len,
+        line.background,
+        fill(fill_char, line.len)
+    )
+end
+
+struct DashLine <: Shape
+    len::Int
+    background::Char
+end
+
+DashLine(len::Int; background=' ') = DashLine(len, background)
+
+function DisplayRow(line::DashLine)
+    fill_char = '-'
+
+    return DisplayRow(
+        line.len,
+        line.background,
+        fill(fill_char, line.len)
+    )
+end
+
+struct Rectangle <: Shape
+    h::Int
+    w::Int
+    background::Char
+    border::Bool
+end
+
+Rectangle(h::Int, w::Int; background=' ', border=true) = Rectangle(h, w, background, border)
+
+function DisplayArray(rectangle::Rectangle)
+    h, w, background = rectangle.h, rectangle.w, rectangle.background
     array = DisplayArray(h, w, background=background)
-    if border
+    if rectangle.border
 
         # top, bottom ─
-        array.context[1] = line(w, background=background)
-        array.context[end] = line(w, background=background)
+        line = Line(w, background)
+        array.context[1] = DisplayRow(line)
+        array.context[end] = DisplayRow(line)
 
         # side │
         for i=2:(h-1) array[i, 1] = Char(0x2502) end
