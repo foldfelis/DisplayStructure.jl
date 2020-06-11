@@ -44,12 +44,14 @@ reset_font_style(io::IO) = print(io, "\033[0m")
 
 function println_style(io::IO, content::Vector{String}, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
     set_font_style(io, style, color)
-    println(io, join(content))
+    join(io, content)
+    println(io)
     reset_font_style(io)
 end
 
 function println_style(io::IO, content::Vector{Char}, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
     set_font_style(io, style, color)
-    println(io, join(content))
+    join(io, content)
+    println(io)
     reset_font_style(io)
 end

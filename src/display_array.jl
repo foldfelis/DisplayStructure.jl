@@ -12,10 +12,8 @@ function DisplayArray(h, w; background=' ')
         "Text width of background character must be 1."
     ))
 
-    content = DisplayRow[]
-    for i=1:h
-        push!(content, DisplayRow(w, background=background))
-    end
+    content = Array{DisplayRow}(undef, h)
+    foreach(i->content[i]=DisplayRow(w, background=background), 1:h)
 
     return DisplayArray(
         (h, w),
