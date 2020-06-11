@@ -30,14 +30,14 @@ end
 
 reset_font_style(io::IO) = print(io, "\033[0m")
 
-function print_style(io::IO, context::String, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
+function print_style(io::IO, content::String, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
     set_font_style(io, style, color)
-    print(io, context)
+    print(io, content)
     reset_font_style(io)
 end
 
-function println_style(io::IO, context::String, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
+function println_style(io::IO, content::String, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
     set_font_style(io, style, color)
-    println(io, context)
+    println(io, content)
     reset_font_style(io)
 end

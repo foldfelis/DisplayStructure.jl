@@ -3,21 +3,21 @@ export DisplayArray, render
 struct DisplayArray
     size::Tuple{Int, Int}
     background::Char
-    context::Vector{DisplayRow}
+    content::Vector{DisplayRow}
 end
 
 function DisplayArray(h, w; background=' ')
     (textwidth(background) != 1) && (throw("Bad background char"))
 
-    context = DisplayRow[]
+    content = DisplayRow[]
     for i=1:h
-        push!(context, DisplayRow(w, background=background))
+        push!(content, DisplayRow(w, background=background))
     end
 
     return DisplayArray(
         (h, w),
         background,
-        context
+        content
     )
 end
 
@@ -30,7 +30,7 @@ function Base.setindex!(
     c::Char,
     display_row::Int, display_col::Int
 )
-    array.context[display_row][display_col] = c
+    array.content[display_row][display_col] = c
 end
 
 function Base.setindex!(
@@ -46,10 +46,10 @@ function Base.setindex!(
     for (i, s) in enumerate(split_str)
         width = display_col_range.stop-display_col_range.start+1
         s = pad2width(string(s), width, background=array.background)
-        array.context[start+i-1][display_col_range] = s
+        array.content[start+i-1][display_col_range] = s
     end
 end
 
 function render(io::IO, array::DisplayArray; style=Symbol[], color=(-1, -1, -1))
-    for row in array.context render(io, row, style=style, color=color) end
+    for row in array.content render(io, row, style=style, color=color) end
 end

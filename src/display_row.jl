@@ -3,7 +3,7 @@ export DisplayRow, render
 struct DisplayRow
     size::Int
     background::Char
-    context::Vector{Char}
+    content::Vector{Char}
 end
 
 function DisplayRow(len::Int; background=' ')
@@ -17,10 +17,10 @@ Base.length(row::DisplayRow) = row.size
 Base.lastindex(row::DisplayRow) = row.size
 
 function get_element_index(row::DisplayRow, display_index::Int)
-    (textwidth(join(row.context)) < display_index) && (throw(BoundsError))
+    (textwidth(join(row.content)) < display_index) && (throw(BoundsError))
 
     accumulate_width = index = pre = post = 0
-    for c in row.context
+    for c in row.content
         width = textwidth(c)
         accumulate_width += width
         index += 1
@@ -36,9 +36,9 @@ end
 
 function Base.deleteat!(row::DisplayRow, display_index::Int)
     index = get_element_index(row, display_index)
-    deleteat!(row.context, index.i)
+    deleteat!(row.content, index.i)
     for i=1:(index.pre+index.post+1)
-        insert!(row.context, index.i, row.background)
+        insert!(row.content, index.i, row.background)
     end
 end
 
@@ -49,11 +49,11 @@ function Base.setindex!(row::DisplayRow, c::Char, display_index::Int)
     i1, pre, _ = get_element_index(row, start)
     i2, _, post = get_element_index(row, stop)
 
-    deleteat!(row.context, collect(i1:i2))
+    deleteat!(row.content, collect(i1:i2))
 
-    for i=1:post insert!(row.context, i1, row.background) end
-    insert!(row.context, i1, c)
-    for i=1:pre insert!(row.context, i1, row.background) end
+    for i=1:post insert!(row.content, i1, row.background) end
+    insert!(row.content, i1, c)
+    for i=1:pre insert!(row.content, i1, row.background) end
 end
 
 function Base.setindex!(row::DisplayRow, str::String, display_range::UnitRange{Int64})
@@ -63,13 +63,13 @@ function Base.setindex!(row::DisplayRow, str::String, display_range::UnitRange{I
     i1, pre, _ = get_element_index(row, start)
     i2, _, post = get_element_index(row, stop)
 
-    deleteat!(row.context, collect(i1:i2))
+    deleteat!(row.content, collect(i1:i2))
 
-    for i=1:post insert!(row.context, i1, row.background) end
-    for c in reverse(str) insert!(row.context, i1, c) end
-    for i=1:pre insert!(row.context, i1, row.background) end
+    for i=1:post insert!(row.content, i1, row.background) end
+    for c in reverse(str) insert!(row.content, i1, c) end
+    for i=1:pre insert!(row.content, i1, row.background) end
 end
 
 function render(io::IO, row::DisplayRow; style=Symbol[], color=(-1, -1, -1))
-    println_style(io, join(row.context), style, color)
+    println_style(io, join(row.content), style, color)
 end

@@ -53,8 +53,8 @@ function DisplayArray(rectangle::Rectangle)
 
         # top, bottom ─
         line = Line(w, background)
-        array.context[1] = DisplayRow(line)
-        array.context[end] = DisplayRow(line)
+        array.content[1] = DisplayRow(line)
+        array.content[end] = DisplayRow(line)
 
         # side │
         for i=2:(h-1) array[i, 1] = Char(0x2502) end
