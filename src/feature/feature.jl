@@ -57,8 +57,9 @@ function DisplayArray(rectangle::Rectangle)
         array.content[end] = DisplayRow(line)
 
         # side │
-        for i=2:(h-1) array[i, 1] = Char(0x2502) end
-        for i=2:(h-1) array[i, end] = Char(0x2502) end
+        foreach(i->array[i, 1]=Char(0x2502), 2:(h-1))
+        foreach(i->array[i, end]=Char(0x2502), 2:(h-1))
+
 
         # corner
         array[1, 1] = Char(0x250C) # ┌
