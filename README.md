@@ -26,4 +26,3 @@ pkg> add https://github.com/foldfelis/DisplayStructure.jl
 ## Usage
 
 ![](gallery/usage.png)
-```
