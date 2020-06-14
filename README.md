@@ -12,7 +12,7 @@
 
 [codecov-url]: https://codecov.io/gh/foldfelis/DisplayStructure.jl
 
-DisplayArray provides arrays that index charector in text width unit. And therefore maintains an immutable display size for terminal emulators.
+DisplayArray provides arrays that index character in text width unit. And therefore maintains an immutable display size for terminal emulators.
 
 ## Quick start
 
