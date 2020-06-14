@@ -3,6 +3,12 @@
     io = IOBuffer()
 
     row = DS.DisplayRow(40, background='.')
+
+    @test repr(row) == "DisplayRow(" *
+        "size=40, " *
+        "background char=Char(46)" *
+    ")"
+
     @test lastindex(row) == length(row)
     @test textwidth(join(row.content)) == length(row)
     DS.render(io, row)

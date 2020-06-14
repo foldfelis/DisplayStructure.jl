@@ -22,6 +22,13 @@ function DisplayArray(h, w; background=' ')
     )
 end
 
+function Base.show(io::IO, row::DisplayArray)
+    print(io, "DisplayArray(" *
+        "size=$(size(row)), " *
+        "background char=Char($(convert(UInt16, row.background)))" *
+        ")")
+end
+
 Base.size(array::DisplayArray) = array.size
 
 Base.lastindex(array::DisplayArray, d::Int) = size(array)[d]

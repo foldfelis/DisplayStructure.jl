@@ -15,6 +15,13 @@ function DisplayRow(len::Int; background=' ')
     return DisplayRow(len, background, fill(background, len))
 end
 
+function Base.show(io::IO, row::DisplayRow)
+    print(io, "DisplayRow(" *
+        "size=$(length(row)), " *
+        "background char=Char($(convert(UInt16, row.background)))" *
+        ")")
+end
+
 Base.length(row::DisplayRow) = row.size
 
 Base.lastindex(row::DisplayRow) = row.size

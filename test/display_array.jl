@@ -3,6 +3,12 @@
     io = IOBuffer()
 
     array = DS.DisplayArray(10, 40, background='.')
+
+    @test repr(array) == "DisplayArray(" *
+        "size=(10, 40), " *
+        "background char=Char(46)" *
+    ")"
+
     DS.render(io, array)
     @test String(take!(io)) ==
         "........................................\n\e[0m" *
@@ -79,6 +85,6 @@
         "........................................\n\e[0m" *
         "\e[38;2;$(R);$(G);$(B)m" *
         "\e[1m\e[4m\e[5m" *
-        "........................................\n\e[0m" 
+        "........................................\n\e[0m"
 
 end

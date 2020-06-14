@@ -1,5 +1,5 @@
 export padding
-export print_style, println_style
+export println_style
 
 # +------+
 # | util |
