@@ -2,6 +2,8 @@ using DisplayStructure
 const DS = DisplayStructure
 using Test
 
+const TERM_SIZE = displaysize(stdout)
+
 @testset "DisplayStructure.jl" begin
 
     include("util.jl")
