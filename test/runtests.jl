@@ -9,6 +9,6 @@ const TERM_SIZE = displaysize(stdout)
     include("util.jl")
     include("display_row.jl")
     include("display_array.jl")
-    # include("shape.jl")
+    include("shape.jl")
 
 end
