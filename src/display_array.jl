@@ -57,6 +57,21 @@ function Base.setindex!(
     end
 end
 
-function render(io::IO, array::DisplayArray; style=Symbol[], color=(-1, -1, -1))
-    foreach(row->render(io, row, style=style, color=color), array.content)
+function render(io::IO, array::DisplayArray; pos=(-1, -1), style=Symbol[], color=(-1, -1, -1))
+    move_cursor2last_line(io)
+    if pos != (-1, -1)
+        move_cursor(io, pos[1], pos[2])
+    else
+        move_cursor(io, 1, 1)
+    end
+    foreach(
+        row->(
+            save_cursor(io);
+            render(io, row, style=style, color=color);
+            restore_cursor(io);
+            move_cursor_down(io, 1)
+        ),
+        array.content
+    )
+    move_cursor2last_line(io)
 end
