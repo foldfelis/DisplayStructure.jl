@@ -29,6 +29,8 @@
         DS.restore_cursor(io)
         @test String(take!(io)) == "\e[u"
 
+        @test DS.get_term_size() == TERM_SIZE .- (1, 0)
+
     end
 
     @testset "util" begin
