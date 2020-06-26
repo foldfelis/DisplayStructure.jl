@@ -62,4 +62,60 @@
             "\e[0m"
     end
 
+    @testset "cursor explored and resetted" begin
+        io = IOBuffer()
+
+        DS.@cursor_explored io begin
+            join(io, ["Hi", "\n"])
+            join(io, ['T', 'H', 'E', 'R', 'E'])
+        end
+
+        @test String(take!(io)) ==
+            "\e[$(TERM_SIZE[1]);1H" *
+            "Hi\nTHERE"
+
+        DS.@cursor_resetted io begin
+            join(io, ["Hi", "\n"])
+            join(io, ['T', 'H', 'E', 'R', 'E'])
+        end
+
+        @test String(take!(io)) ==
+            "Hi\nTHERE" *
+            "\e[$(TERM_SIZE[1]);1H"
+
+        # mix
+        R, G, B = color = (255, 0, 0)
+        style = [:bold, :underline, :blink]
+        ans =
+            "\e[$(TERM_SIZE[1]);1H" *
+            "\e[38;2;$(R);$(G);$(B)m" *
+            "\e[1m\e[4m\e[5m" *
+            "Hi\nTHERE" *
+            "\e[0m" *
+            "\e[$(TERM_SIZE[1]);1H"
+
+        DS.@cursor_resetted io begin
+            DS.@cursor_explored io begin
+                DS.@styled io style color begin
+                    join(io, ["Hi", "\n"])
+                    join(io, ['T', 'H', 'E', 'R', 'E'])
+                end
+            end
+        end
+
+        @test String(take!(io)) == ans
+
+        DS.@cursor_explored io begin
+            DS.@cursor_resetted io begin
+                DS.@styled io style color begin
+                    join(io, ["Hi", "\n"])
+                    join(io, ['T', 'H', 'E', 'R', 'E'])
+                end
+            end
+        end
+
+        @test String(take!(io)) == ans
+
+    end
+
 end

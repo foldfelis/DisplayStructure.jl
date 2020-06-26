@@ -1,8 +1,8 @@
 export padding
-export print_style, @styled
 export clear, move_cursor, show_cursor
 export move_cursor_up, move_cursor_down, move_cursor_right, move_cursor_left
 export get_term_size
+export @styled, @cursor_explored, @cursor_resetted
 
 # +---------+
 # | cursors |
@@ -64,8 +64,16 @@ macro styled(io, style, color, expr)
     end
 end
 
-function print_style(io::IO, content::Vector{Char}, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
-    set_font_style(io, style, color)
-    join(io, content)
-    reset_font_style(io)
+macro cursor_explored(io, expr)
+    return quote
+        move_cursor2last_line($(esc(io)))
+        $(esc(expr))
+    end
+end
+
+macro cursor_resetted(io, expr)
+    return quote
+        $(esc(expr))
+        move_cursor2last_line($(esc(io)))
+    end
 end
