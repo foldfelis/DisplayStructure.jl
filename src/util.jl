@@ -1,6 +1,6 @@
 export padding
 export print_style
-export clear, move_cursor
+export clear, move_cursor, show_cursor
 export move_cursor_up, move_cursor_down, move_cursor_right, move_cursor_left
 export get_term_size
 
@@ -10,6 +10,7 @@ export get_term_size
 
 clear(io::IO) = print(io, "\033[2J")
 
+show_cursor(io::IO, enable=true) = enable ? print(io, "\033[?25h") : print(io, "\033[?25l")
 move_cursor(io::IO, y::Int, x::Int) = print(io, "\033[$(y);$(x)H")
 move_cursor_up(io::IO, n::Int) = print(io, "\033[$(n)A")
 move_cursor_down(io::IO, n::Int) = print(io, "\033[$(n)B")

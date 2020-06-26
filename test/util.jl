@@ -5,6 +5,12 @@
         DS.clear(io)
         @test String(take!(io)) == "\e[2J"
 
+        DS.show_cursor(io)
+        @test String(take!(io)) == "\e[?25h"
+
+        DS.show_cursor(io, false)
+        @test String(take!(io)) == "\e[?25l"
+
         DS.move_cursor(io, 2, 3)
         @test String(take!(io)) == "\e[2;3H"
 
