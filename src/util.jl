@@ -1,5 +1,5 @@
 export padding
-export print_style
+export print_style, @styled
 export clear, move_cursor, show_cursor
 export move_cursor_up, move_cursor_down, move_cursor_right, move_cursor_left
 export get_term_size
@@ -56,10 +56,12 @@ end
 
 reset_font_style(io::IO) = print(io, "\033[0m")
 
-function print_style(io::IO, content::Vector{String}, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
-    set_font_style(io, style, color)
-    join(io, content)
-    reset_font_style(io)
+macro styled(io, style, color, expr)
+    return quote
+        set_font_style($(esc(io)), $(esc(style)), $(esc(color)))
+        $(esc(expr))
+        reset_font_style($(esc(io)))
+    end
 end
 
 function print_style(io::IO, content::Vector{Char}, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
@@ -67,17 +69,3 @@ function print_style(io::IO, content::Vector{Char}, style::Vector{Symbol}, color
     join(io, content)
     reset_font_style(io)
 end
-
-# function println_style(io::IO, content::Vector{String}, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
-#     set_font_style(io, style, color)
-#     join(io, content)
-#     println(io)
-#     reset_font_style(io)
-# end
-
-# function println_style(io::IO, content::Vector{Char}, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
-#     set_font_style(io, style, color)
-#     join(io, content)
-#     println(io)
-#     reset_font_style(io)
-# end
