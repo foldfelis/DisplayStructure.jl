@@ -38,4 +38,12 @@
     end
     @test String(take!(io)) == str
 
+    rectangle = DS.Rectangle((10, 20))
+    DS.@cursor_resetted io begin
+        DS.@cursor_explored io begin
+            DS.@styled io style color DS.render(io, DS.DisplayArray(rectangle))
+        end
+    end
+    @test String(take!(io)) == str
+
 end
