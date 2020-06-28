@@ -80,13 +80,7 @@ function Base.setindex!(row::DisplayRow, str::String, display_range::UnitRange{I
     for i=1:pre insert!(row.content, i1, row.background) end
 end
 
-function render(io::IO, row::DisplayRow; pos=(-1, -1), style=Symbol[], color=(-1, -1, -1))
-    if pos != (-1, -1)
-        move_cursor2last_line(io)
-        move_cursor(io, pos[1], pos[2])
-    end
-    print_style(io, row.content, style, color)
-    if pos != (-1, -1)
-        move_cursor2last_line(io)
-    end
+function render(io::IO, row::DisplayRow; pos=(-1, -1))
+    (pos != (-1, -1)) && move_cursor(io, pos[1], pos[2])
+    join(io, row.content)
 end

@@ -47,34 +47,19 @@
 
     @testset "font style" begin
         io = IOBuffer()
-
-        str = "I am bolded, underlined, blinked red string"
         R, G, B = color = (255, 0, 0)
+        style = [:bold, :underline, :blink]
 
-        DS.print_style(
-            io,
-            collect(str),
-            [:bold, :underline, :blink],
-            color
-        )
+        DS.set_style(io, style, color)
+        join(io, ["Hi", "\n"])
+        join(io, ['T', 'H', 'E', 'R', 'E'])
+        DS.reset_style(io)
+
         @test String(take!(io)) ==
             "\e[38;2;$(R);$(G);$(B)m" *
             "\e[1m\e[4m\e[5m" *
-            str *
+            "Hi\nTHERE" *
             "\e[0m"
-
-        DS.print_style(
-            io,
-            [str],
-            [:bold, :underline, :blink],
-            color
-        )
-        @test String(take!(io)) ==
-            "\e[38;2;$(R);$(G);$(B)m" *
-            "\e[1m\e[4m\e[5m" *
-            str *
-            "\e[0m"
-
     end
 
 end

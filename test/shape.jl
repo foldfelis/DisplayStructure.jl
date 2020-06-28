@@ -5,32 +5,43 @@
     line = DS.Line(20)
     DS.render(io, DS.DisplayRow(line))
     @test String(take!(io)) ==
-        "────────────────────\e[0m"
+        "────────────────────"
 
     line = DS.DashLine(20)
     DS.render(io, DS.DisplayRow(line))
     @test String(take!(io)) ==
-        "--------------------\e[0m"
+        "--------------------"
 
+    style=[:bold, :blink]
+    R, G, B = color=(255, 100, 0)
     str =
-        "\e[$(TERM_SIZE[1]);1H\e[1;1H" *
-        "\e[s\e[38;2;255;100;0m\e[1m\e[5m┌──────────────────┐\e[0m\e[u\e[1B" *
-        "\e[s\e[38;2;255;100;0m\e[1m\e[5m│                  │\e[0m\e[u\e[1B" *
-        "\e[s\e[38;2;255;100;0m\e[1m\e[5m│                  │\e[0m\e[u\e[1B" *
-        "\e[s\e[38;2;255;100;0m\e[1m\e[5m│                  │\e[0m\e[u\e[1B" *
-        "\e[s\e[38;2;255;100;0m\e[1m\e[5m│                  │\e[0m\e[u\e[1B" *
-        "\e[s\e[38;2;255;100;0m\e[1m\e[5m│                  │\e[0m\e[u\e[1B" *
-        "\e[s\e[38;2;255;100;0m\e[1m\e[5m│                  │\e[0m\e[u\e[1B" *
-        "\e[s\e[38;2;255;100;0m\e[1m\e[5m│                  │\e[0m\e[u\e[1B" *
-        "\e[s\e[38;2;255;100;0m\e[1m\e[5m│                  │\e[0m\e[u\e[1B" *
-        "\e[s\e[38;2;255;100;0m\e[1m\e[5m└──────────────────┘\e[0m\e[u\e[1B" *
-        "\e[$(TERM_SIZE[1]);1H"
+        "\e[38;2;$(R);$(G);$(B)m\e[1m\e[5m" *
+        "\e[s┌──────────────────┐\e[u\e[1B" *
+        "\e[s│                  │\e[u\e[1B" *
+        "\e[s│                  │\e[u\e[1B" *
+        "\e[s│                  │\e[u\e[1B" *
+        "\e[s│                  │\e[u\e[1B" *
+        "\e[s│                  │\e[u\e[1B" *
+        "\e[s│                  │\e[u\e[1B" *
+        "\e[s│                  │\e[u\e[1B" *
+        "\e[s│                  │\e[u\e[1B" *
+        "\e[s└──────────────────┘\e[u\e[1B" *
+        "\e[0m"
+
     rectangle = DS.Rectangle(10, 20)
-    DS.render(io, DS.DisplayArray(rectangle), style=[:bold, :blink], color=(255, 100, 0))
+
+    DS.set_style(io, style, color)
+    DS.render(io, DS.DisplayArray(rectangle))
+    DS.reset_style(io)
+
     @test String(take!(io)) == str
 
     rectangle = DS.Rectangle((10, 20))
-    DS.render(io, DS.DisplayArray(rectangle), style=[:bold, :blink], color=(255, 100, 0))
+
+    DS.set_style(io, style, color)
+    DS.render(io, DS.DisplayArray(rectangle))
+    DS.reset_style(io)
+
     @test String(take!(io)) == str
 
 end
