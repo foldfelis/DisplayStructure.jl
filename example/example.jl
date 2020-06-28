@@ -49,13 +49,18 @@ function run_app(
     is_running = true
     while is_running
         # render
-        DS.set_style(io, a_style, a_color)
-        DS.render(io, area, pos=(1, 1))
-        DS.reset_style(io)
+        buffer = IOBuffer()
 
-        DS.set_style(io, l_style, l_color)
-        DS.render(io, label, pos=label_pos)
-        DS.reset_style(io)
+        DS.set_style(buffer, a_style, a_color)
+        DS.render(buffer, area, pos=(1, 1))
+        DS.reset_style(buffer)
+
+        DS.set_style(buffer, l_style, l_color)
+        DS.render(buffer, label, pos=label_pos)
+        DS.reset_style(buffer)
+
+        content = String(take!(buffer))
+        print(io, content)
 
         # read char
         c = read_key(t)
@@ -73,6 +78,7 @@ function run_app(
     end
 
     # reset terminal
+    DS.move_cursor2last_line(io)
     DS.show_cursor(io, true)
 end
 
