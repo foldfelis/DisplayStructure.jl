@@ -43,7 +43,6 @@ function run_app(
 
     # prepare terminal
     DS.show_cursor(io, false)
-    DS.clear(io)
 
     # main loop
     is_running = true
@@ -51,6 +50,7 @@ function run_app(
         # render
         buffer = IOBuffer()
 
+        DS.clear(buffer)
         DS.set_style(buffer, a_style, a_color)
         DS.render(buffer, area, pos=(1, 1))
         DS.reset_style(buffer)
