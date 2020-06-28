@@ -2,7 +2,7 @@ export padding
 export clear, move_cursor, show_cursor
 export move_cursor_up, move_cursor_down, move_cursor_right, move_cursor_left
 export get_term_size
-export @styled, @cursor_explored, @cursor_resetted
+export set_style, reset_style
 
 # +---------+
 # | cursors |
@@ -44,7 +44,7 @@ end
 # | font style |
 # +------------+
 
-function set_font_style(io::IO, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
+function set_style(io::IO, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
     R, G, B = color
     !(R==G==B==-1) && (print(io, "\033[38;2;$(R);$(G);$(B)m"))
     (:bold in style) && (print(io, "\033[1m"))
@@ -54,26 +54,4 @@ function set_font_style(io::IO, style::Vector{Symbol}, color::Tuple{Int, Int, In
     (:hidden in style) && (print(io, "\033[8m"))
 end
 
-reset_font_style(io::IO) = print(io, "\033[0m")
-
-macro styled(io, style, color, expr)
-    return quote
-        set_font_style($(esc(io)), $(esc(style)), $(esc(color)))
-        $(esc(expr))
-        reset_font_style($(esc(io)))
-    end
-end
-
-macro cursor_explored(io, expr)
-    return quote
-        move_cursor2last_line($(esc(io)))
-        $(esc(expr))
-    end
-end
-
-macro cursor_resetted(io, expr)
-    return quote
-        $(esc(expr))
-        move_cursor2last_line($(esc(io)))
-    end
-end
+reset_style(io::IO) = print(io, "\033[0m")

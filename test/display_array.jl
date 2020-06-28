@@ -53,8 +53,11 @@
     # style
     R, G, B = color = (255, 0, 0)
     style = [:bold, :underline, :blink]
-    DS.@styled io style color DS.render(io, array)
-    println(stdout)
+
+    DS.set_style(io, style, color)
+    DS.render(io, array)
+    DS.reset_style(io)
+
     @test String(take!(io)) ==
         "\e[38;2;$(R);$(G);$(B)m\e[1m\e[4m\e[5m" *
         "\e[s........................................\e[u\e[1B" *
@@ -98,29 +101,5 @@
         "\e[s........................................\e[u\e[1B" *
         "\e[s........................................\e[u\e[1B" *
         "\e[s........................................\e[u\e[1B"
-
-    # explored resetted styled pos
-    DS.@cursor_resetted io begin
-        DS.@cursor_explored io begin
-            DS.@styled io style color DS.render(io, array, pos=(5, 6))
-        end
-    end
-
-    @test String(take!(io)) ==
-    "\e[$(TERM_SIZE[1]);1H" *
-    "\e[38;2;$(R);$(G);$(B)m\e[1m\e[4m\e[5m" *
-    "\e[5;6H" *
-    "\e[s........................................\e[u\e[1B" *
-    "\e[s......................................哈\e[u\e[1B" *
-    "\e[s........................................\e[u\e[1B" *
-    "\e[s.......這是一段.........................\e[u\e[1B" *
-    "\e[s.......非常感性的.......................\e[u\e[1B" *
-    "\e[s.......字串.............................\e[u\e[1B" *
-    "\e[s........................................\e[u\e[1B" *
-    "\e[s........................................\e[u\e[1B" *
-    "\e[s........................................\e[u\e[1B" *
-    "\e[s........................................\e[u\e[1B" *
-    "\e[0m" *
-    "\e[$(TERM_SIZE[1]);1H"
 
 end
