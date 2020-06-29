@@ -45,6 +45,9 @@ struct Rectangle <: Shape
 end
 
 Rectangle(h::Int, w::Int; background=' ', border=true) = Rectangle(h, w, background, border)
+function Rectangle(size::Tuple{Int, Int}; background=' ', border=true)
+    return Rectangle(size[1], size[2], background, border)
+end
 
 function DisplayArray(rectangle::Rectangle)
     h, w, background = rectangle.h, rectangle.w, rectangle.background
