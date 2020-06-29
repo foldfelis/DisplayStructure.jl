@@ -51,7 +51,6 @@ function run_app(
         # render
         buffer = IOBuffer()
 
-        # DS.clear(buffer)
         DS.set_style(buffer, a_style, a_color)
         DS.render(buffer, area, pos=(1, 1))
         DS.reset_style(buffer)
