@@ -67,21 +67,21 @@ julia> DS.show_cursor(buffer, false)
 6. Render area
 
 ```julia
-julia> DS.set_style(buffer, a_style, a_color);
+julia> DS.set_style(buffer, a_style, a_color)
 
-julia> DS.render(buffer, area, pos=(1, 1));
+julia> DS.render(buffer, area, pos=(1, 1))
 
-julia> DS.reset_style(buffer);
+julia> DS.reset_style(buffer)
 ```
 
 7. Render label
 
 ```julia
-julia> DS.set_style(buffer, l_style, l_color);
+julia> DS.set_style(buffer, l_style, l_color)
 
-julia> DS.render(buffer, label, pos=label_pos);
+julia> DS.render(buffer, label, pos=label_pos)
 
-julia> DS.reset_style(buffer);
+julia> DS.reset_style(buffer)
 ```
 
 8. Reset cursor back to last line
@@ -90,18 +90,16 @@ julia> DS.reset_style(buffer);
 julia> DS.move_cursor2last_line(buffer)
 ```
 
-9. Redirect IO from buffer to STDOUT
-
-```julia
-julia> content = take!(buffer);
-
-julia> write(stdout, content)
-```
-
-10. Show cursor
+9. Show cursor
 
 ```julia
 julia> DS.show_cursor(buffer, true)
+```
+
+10. Redirect IO from buffer to STDOUT
+
+```julia
+julia> write(stdout, take!(buffer))
 ```
 
 ![](gallery/usage.png)

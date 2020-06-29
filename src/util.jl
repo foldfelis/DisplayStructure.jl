@@ -52,6 +52,8 @@ function set_style(io::IO, style::Vector{Symbol}, color::Tuple{Int, Int, Int})
     (:blink in style) && (print(io, "\033[5m"))
     (:reverse in style) && (print(io, "\033[7m"))
     (:hidden in style) && (print(io, "\033[8m"))
+
+    return nothing
 end
 
 reset_style(io::IO) = print(io, "\033[0m")
