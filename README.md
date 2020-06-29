@@ -20,7 +20,7 @@ The package can be installed with the Julia package manager.
 From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
 
 ```julia
-pkg> add https://github.com/foldfelis/DisplayStructure.jl
+pkg> add DisplayStructure
 ```
 
 ## Usage
