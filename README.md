@@ -103,3 +103,12 @@ julia> write(stdout, take!(buffer))
 ```
 
 ![](gallery/usage.png)
+
+## Example
+
+The [example](example/example.jl) demostrates a minimum viable product
+that shows a border and a label.
+Integrate with
+[keyboard key reading feature](https://gist.github.com/foldfelis/375dc13b2d3be792fdf029466d7761d0),
+the movable label can be contraled by pressing `w` `s` `a` `d` .
+Pressing `ESC` to quit loop.
