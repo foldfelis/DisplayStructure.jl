@@ -1,4 +1,8 @@
-# Display Structure
+<h1 align="center">
+    <img width="400" src="gallery/logo.png" alt="crayons">
+    <br>
+</h1>
+
 
 | **Build Status**                                              |
 |:-------------------------------------------------------------:|
@@ -11,6 +15,8 @@
 [codecov-img]: https://codecov.io/gh/foldfelis/DisplayStructure.jl/branch/master/graph/badge.svg
 
 [codecov-url]: https://codecov.io/gh/foldfelis/DisplayStructure.jl
+
+# Display Structure
 
 DisplayArray provides arrays that index character in text width unit. And therefore maintains an immutable display size for terminal emulators.
 
@@ -112,3 +118,5 @@ Integrate with
 [keyboard key reading feature](https://gist.github.com/foldfelis/375dc13b2d3be792fdf029466d7761d0),
 the movable label can be contraled by pressing `w` `s` `a` `d` .
 Pressing `ESC` to quit loop.
+
+The [style functions](src/util.jl#L43) defined under [util.jl](src/util.jl) provide a easy way to set font color and style. It is recommended that one use [Crayons](https://github.com/KristofferC/Crayons.jl) to gain more decorations. A [example](example/logo.jl) shows how to integrate with Crayons.
