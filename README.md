@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img width="400" src="gallery/logo.png" alt="crayons">
+    <img width="400" src="gallery/logo.png" alt="Display Structure">
     <br>
 </h1>
 
@@ -119,4 +119,6 @@ Integrate with
 the movable label can be contraled by pressing `w` `s` `a` `d` .
 Pressing `ESC` to quit loop.
 
-The [style functions](src/util.jl#L43) defined under [util.jl](src/util.jl) provide a easy way to set font color and style. It is recommended that one use [Crayons](https://github.com/KristofferC/Crayons.jl) to gain more decorations. A [example](example/logo.jl) shows how to integrate with Crayons.
+The [style functions](src/util.jl#L43) defined under [util.jl](src/util.jl) provide a easy way to set font color and style.
+It is recommended that one use [Crayons](https://github.com/KristofferC/Crayons.jl) to gain more decorations.
+A [example](example/logo.jl) shows how to integrate with Crayons.
