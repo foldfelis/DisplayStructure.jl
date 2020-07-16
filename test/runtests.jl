@@ -1,10 +1,16 @@
 using DisplayStructure
 const DS = DisplayStructure
+using Terming
+const T = Terming
 using Test
 
-const TERM_SIZE = displaysize(stdout)
-
 @testset "DisplayStructure.jl" begin
+
+    T.set_term!(T.FakeTerminal(
+        Base.BufferStream(), Base.BufferStream(), Base.BufferStream()
+    ))
+
+    TERM_SIZE = T.displaysize()
 
     include("util.jl")
     include("display_row.jl")
