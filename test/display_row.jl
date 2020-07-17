@@ -49,4 +49,9 @@
         "\e[5;6H" *
         ".....it..字............................."
 
+    # buffered
+    T.@buffered DS.render(row)
+    @test T.read_strem(stream=T.out_stream)  ==
+        ".....it..字............................."
+
 end

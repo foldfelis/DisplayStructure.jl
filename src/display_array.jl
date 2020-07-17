@@ -57,14 +57,14 @@ function Base.setindex!(
     end
 end
 
-function render(array::DisplayArray; pos=(-1, -1), stream=T.out_stream, buffered=false)
-    (pos != (-1, -1)) && T.cmove(pos[1], pos[2], stream=stream, buffered=buffered)
+function render(array::DisplayArray; pos=(-1, -1), stream=T.out_stream)
+    (pos != (-1, -1)) && T.cmove(pos[1], pos[2], stream=stream)
     foreach(
         row->(
-            T.csave(stream=stream, buffered=buffered);
-            render(row, stream=stream, buffered=buffered);
-            T.crestore(stream=stream, buffered=buffered);
-            T.cmove_down(stream=stream, buffered=buffered)
+            T.csave(stream=stream);
+            render(row, stream=stream);
+            T.crestore(stream=stream);
+            T.cmove_down(stream=stream)
         ),
         array.content
     )
