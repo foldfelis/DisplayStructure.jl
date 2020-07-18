@@ -8,4 +8,5 @@ module DisplayStructure
     include("display_array.jl")
     include("shape.jl")
 
+    __init__() = T.mark_bufferable(:render)
 end
