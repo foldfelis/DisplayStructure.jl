@@ -80,7 +80,11 @@ function Base.setindex!(row::DisplayRow, str::String, display_range::UnitRange{I
     for i=1:pre insert!(row.content, i1, row.background) end
 end
 
-function render(row::DisplayRow; pos=(-1, -1), stream=T.out_stream)
-    (pos != (-1, -1)) && T.cmove(pos[1], pos[2], stream=stream)
-    T.join(row.content, stream=stream)
+function render(stream::IO, row::DisplayRow; pos=(-1, -1))
+    T.buffered(stream, row, pos) do buffer, row, pos
+        (pos != (-1, -1)) && T.cmove(buffer, pos[1], pos[2])
+        T.join(buffer, row.content)
+    end
 end
+
+render(row::DisplayRow; pos=(-1, -1)) = render(T.out_stream, row, pos=pos)
