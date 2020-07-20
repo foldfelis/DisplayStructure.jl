@@ -16,7 +16,7 @@ function DisplayRow(len::Int; background=' ')
 end
 
 function Base.show(io::IO, row::DisplayRow)
-    print(io, "DisplayRow(" *
+    Base.print(io, "DisplayRow(" *
         "size=$(length(row)), " *
         "background char=Char($(convert(UInt16, row.background)))" *
         ")")
@@ -80,7 +80,11 @@ function Base.setindex!(row::DisplayRow, str::String, display_range::UnitRange{I
     for i=1:pre insert!(row.content, i1, row.background) end
 end
 
-function render(io::IO, row::DisplayRow; pos=(-1, -1))
-    (pos != (-1, -1)) && move_cursor(io, pos[1], pos[2])
-    join(io, row.content)
+function render(stream::IO, row::DisplayRow; pos=(-1, -1))
+    T.buffered(stream, row, pos) do buffer, row, pos
+        (pos != (-1, -1)) && T.cmove(buffer, pos[1], pos[2])
+        T.join(buffer, row.content)
+    end
 end
+
+render(row::DisplayRow; pos=(-1, -1)) = render(T.out_stream, row, pos=pos)
