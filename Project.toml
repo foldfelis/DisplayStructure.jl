@@ -1,7 +1,7 @@
 name = "DisplayStructure"
 uuid = "3564bb48-796b-48a4-9154-f091725b7055"
 authors = ["JingYu Ning <foldfelis@gmail.com> and contributors"]
-version = "0.2.1"
+version = "0.2.2"
 
 [deps]
 Crayons = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
