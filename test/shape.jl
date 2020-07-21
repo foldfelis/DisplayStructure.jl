@@ -2,12 +2,12 @@
 
     line = DS.Line(20)
     DS.render(DS.DisplayRow(line))
-    @test T.read_strem(T.out_stream)  ==
+    @test T.read_stream(T.out_stream)  ==
         "────────────────────"
 
     line = DS.DashLine(20)
     DS.render(DS.DisplayRow(line))
-    @test T.read_strem(T.out_stream)  ==
+    @test T.read_stream(T.out_stream)  ==
         "--------------------"
 
     str =
@@ -24,10 +24,10 @@
 
     rectangle = DS.Rectangle(10, 20)
     DS.render(DS.DisplayArray(rectangle))
-    @test T.read_strem(T.out_stream)  == str
+    @test T.read_stream(T.out_stream)  == str
 
     rectangle = DS.Rectangle((10, 20))
     DS.render(DS.DisplayArray(rectangle))
-    @test T.read_strem(T.out_stream)  == str
+    @test T.read_stream(T.out_stream)  == str
 
 end

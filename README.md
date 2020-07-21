@@ -3,7 +3,6 @@
     <br>
 </h1>
 
-
 | **Build Status**                                              |
 |:-------------------------------------------------------------:|
 | [![][travis-img]][travis-url] [![][codecov-img]][codecov-url] |
