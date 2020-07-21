@@ -5,27 +5,6 @@ const DS = DisplayStructure
 using Terming
 const T = Terming
 
-##### Utils #####
-
-read_next_byte(io::IO) = read(io, 1)[1]
-
-function read_stream_bytes(stream::IO)
-    queue = UInt8[]
-
-    push!(queue, read_next_byte(stream))
-
-    stream_size = stream.buffer.size
-    if stream_size > 1
-        for i=1:stream_size-1
-            push!(queue, read_next_byte(stream))
-        end
-    end
-
-    return queue
-end
-
-read_stream(stream::IO) = String(read_stream_bytes(stream))
-
 ##### Views #####
 
 const RES = string(Crayon(reset=true))
