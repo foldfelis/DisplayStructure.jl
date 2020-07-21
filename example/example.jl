@@ -113,6 +113,11 @@ paint(app::App) = T.buffered() do buffer
     foreach(view->paint(buffer, view.second), app.views)
 end
 
+function update(app::App)
+    app.views[:str].pos .= app.model.pos
+    paint(app)
+end
+
 function handle_quit(::App)
     keep_running = false
     T.cmove_line_last()
@@ -121,22 +126,19 @@ function handle_quit(::App)
 end
 
 function handle_event(app::App)
-    str_view = app.views[:str]
-    str = app.model
-
     is_running = true
     while is_running
         sequence = T.read_stream()
         if sequence == "\e"
             is_running = handle_quit(app)
         elseif sequence == "w"
-            (move(app.model, :up)) && (str_view.pos[1] = str.pos[1]; paint(app))
+            move(app.model, :up) && update(app)
         elseif sequence == "s"
-            (move(app.model, :down)) && (str_view.pos[1] = str.pos[1]; paint(app))
+            move(app.model, :down) && update(app)
         elseif sequence == "d"
-            (move(app.model, :right)) && (str_view.pos[2] = str.pos[2]; paint(app))
+            move(app.model, :right) && update(app)
         elseif sequence == "a"
-            (move(app.model, :left)) && (str_view.pos[2] = str.pos[2]; paint(app))
+            move(app.model, :left) && update(app)
         end
     end
 end
@@ -146,14 +148,9 @@ function Base.run(app::App)
     paint(app)
     handle_event(app)
     reset_term()
+    return
 end
 
 ##### Main #####
 
-function main()
-    app = App()
-    run(app)
-    return
-end
-
-main()
+run(App())
