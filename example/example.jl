@@ -1,92 +1,156 @@
 using REPL
+using Crayons
 using DisplayStructure
 const DS = DisplayStructure
+using Terming
+const T = Terming
 
-read_next_char(io::IO) = Char(read(io, 1)[1])
+##### Views #####
 
-function read_key(t)
-    c = string(read_next_char(t.in_stream))
+const RES = string(Crayon(reset=true))
 
-    stream_size = t.in_stream.buffer.size
-    if stream_size > 1
-        for i=1:stream_size-1
-            c *= read_next_char(t.in_stream)
-        end
+abstract type View end
+
+function paint(stream::IO, view::View)
+    T.print(stream, view.style)
+    if hasfield(typeof(view), :pos)
+        DS.render(stream, view.content, pos=view.pos)
+    else
+        DS.render(stream, view.content, pos=(1, 1))
     end
-
-    return c
+    T.print(stream, RES)
 end
 
-function run_app(
-    t=REPL.Terminals.TTYTerminal(
-        get(ENV, "TERM", Sys.iswindows() ? "" : "dumb"),
-        stdin, stdout, stderr
-    )
-)
-    # const
-    io = stdout
+paint(view::View) = paint(T.out_stream, view)
 
-    # design
-    a_h = 20; a_w = 100
-    area = DS.DisplayArray(DS.Rectangle(a_h, a_w))
-    a_color = (93, 173, 226)
-    a_style = [:bold]
+struct FormView <: View
+    content::DS.DisplayArray
+    style::Crayon
+end
 
-    str = "會動的字串"
+function FormView(h::Int, w::Int)
+    content = DS.DisplayArray(DS.Rectangle(h, w))
+    style = Crayon(foreground=(93, 173, 226), bold=true)
+    return FormView(content, style)
+end
+
+struct StrView <: View
+    content::DS.DisplayRow
+    style::Crayon
+    pos::Vector{Int}
+end
+
+function StrView(str::String)
     width = textwidth(str)
-    label = DS.DisplayRow(width)
-    l_color = (82, 190, 128)
-    l_style = Symbol[]
-    label[1:end] = str
-    label_pos = [5, 5]
+    content = DS.DisplayRow(width)
+    content[1:end] = str
+    style = Crayon(foreground=(82, 190, 128))
+    return StrView(content, style, [5, 5])
+end
 
-    # prepare terminal
-    REPL.Terminals.raw!(t, true)
-    DS.show_cursor(io, false)
-    DS.clear(io)
+##### Models #####
 
-    # main loop
+abstract type Model end
+
+struct MovableStr <: Model
+    reachable_size::Tuple{UnitRange{Int64}, UnitRange{Int64}}
+    pos::Vector{Int}
+end
+
+function MovableStr(
+    y_range::UnitRange{Int64},
+    x_range::UnitRange{Int64}
+)
+    return MovableStr((y_range, x_range),[5, 5])
+end
+
+function move(str::MovableStr, direction::Symbol)
+    if direction === :up
+        new_y = str.pos[1] - 1
+        (new_y in str.reachable_size[1]) && (str.pos[1] = new_y; return true)
+    elseif direction === :down
+        new_y = str.pos[1] + 1
+        (new_y in str.reachable_size[1]) && (str.pos[1] = new_y; return true)
+    elseif direction === :right
+        new_x = str.pos[2] + 1
+        (new_x in str.reachable_size[2]) && (str.pos[2] = new_x; return true)
+    elseif direction === :left
+        new_x = str.pos[2] - 1
+        (new_x in str.reachable_size[2]) && (str.pos[2] = new_x; return true)
+    end
+
+    return false
+end
+
+##### Controls #####
+
+function init_term()
+    T.raw!(true)
+    T.cshow(false)
+    T.clear()
+end
+
+function reset_term()
+    T.raw!(false)
+    T.cshow(true)
+end
+
+struct App
+    views::Dict{Symbol, View}
+    model::Model
+end
+
+function App()
+    h, w = T.displaysize()
+    str = "會動的字串"
+    return App(
+        Dict(:form=>FormView(h, w), :str=>StrView(str)),
+        MovableStr(2:(h-1), 2:(w-1-textwidth(str)+1))
+    )
+end
+
+paint(app::App) = T.buffered() do buffer
+    foreach(view->paint(buffer, view.second), app.views)
+end
+
+function update(app::App)
+    app.views[:str].pos .= app.model.pos
+    paint(app)
+end
+
+function handle_quit(::App)
+    keep_running = false
+    T.cmove_line_last()
+    T.println("\nShutting down")
+    return keep_running
+end
+
+function handle_event(app::App)
     is_running = true
     while is_running
-        # render
-        buffer = IOBuffer()
-
-        DS.set_style(buffer, a_style, a_color)
-        DS.render(buffer, area, pos=(1, 1))
-        DS.reset_style(buffer)
-
-        DS.set_style(buffer, l_style, l_color)
-        DS.render(buffer, label, pos=Tuple(label_pos))
-        DS.reset_style(buffer)
-
-        content = take!(buffer)
-        write(io, content)
-
-        # read char
-        c = read_key(t)
-        if c == "\e"
-            is_running = false
-        elseif c == "w"
-            label_pos[1] -= 1
-        elseif c == "s"
-            label_pos[1] += 1
-        elseif c == "a"
-            label_pos[2] -= 1
-        elseif c == "d"
-            label_pos[2] += 1
+        sequence = T.read_stream()
+        if sequence == "\e"
+            is_running = handle_quit(app)
+        elseif sequence == "w"
+            move(app.model, :up) && update(app)
+        elseif sequence == "s"
+            move(app.model, :down) && update(app)
+        elseif sequence == "d"
+            move(app.model, :right) && update(app)
+        elseif sequence == "a"
+            move(app.model, :left) && update(app)
         end
-
-        # adj label_pos value
-        (label_pos[1] < 2) && (label_pos[1] = 2)
-        (label_pos[1]+1 > a_h) && (label_pos[1] = a_h-1)
-        (label_pos[2] < 2) && (label_pos[2] = 2)
-        (label_pos[2]+width > a_w) && (label_pos[2] = a_w-width)
     end
-
-    # reset terminal
-    REPL.Terminals.raw!(t, false)
-    DS.move_cursor2last_line(io)
-    DS.show_cursor(io, true)
 end
 
-run_app()
+function Base.run(app::App)
+    init_term()
+    paint(app)
+    handle_event(app)
+    reset_term()
+    return
+end
+
+##### Main #####
+
+run(App())
