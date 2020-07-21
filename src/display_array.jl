@@ -23,7 +23,7 @@ function DisplayArray(h, w; background=' ')
 end
 
 function Base.show(io::IO, row::DisplayArray)
-    print(io, "DisplayArray(" *
+    Base.print(io, "DisplayArray(" *
         "size=$(size(row)), " *
         "background char=Char($(convert(UInt16, row.background)))" *
         ")")
@@ -57,15 +57,19 @@ function Base.setindex!(
     end
 end
 
-function render(io::IO, array::DisplayArray; pos=(-1, -1))
-    (pos != (-1, -1)) && move_cursor(io, pos[1], pos[2])
-    foreach(
-        row->(
-            save_cursor(io);
-            render(io, row);
-            restore_cursor(io);
-            move_cursor_down(io, 1)
-        ),
-        array.content
-    )
+function render(stream::IO, array::DisplayArray; pos=(-1, -1))
+    T.buffered(stream, array, pos) do buffer, array, pos
+        (pos != (-1, -1)) && T.cmove(buffer, pos[1], pos[2])
+        foreach(
+            row->(
+                T.csave(buffer);
+                render(buffer, row);
+                T.crestore(buffer);
+                T.cmove_down(buffer)
+            ),
+            array.content
+        )
+    end
 end
+
+render(array::DisplayArray; pos=(-1, -1)) = render(T.out_stream, array, pos=pos)
