@@ -36,16 +36,14 @@ pkg> add DisplayStructure
 julia> using DisplayStructure; const DS = DisplayStructure;
 ```
 
-2. Declear an area
+2. Declare an area
 
 ```julia
 julia> area = DS.DisplayArray(DS.Rectangle(20, 100))
 DisplayArray(size=(20, 100), background char=Char(32))
-
-julia> a_color = (93, 173, 226); a_style = [:bold];
 ```
 
-3. Declear a label
+3. Declare a label
 
 ```julia
 julia> str = "會動的字串"; width = textwidth(str); label = DS.DisplayRow(width)
@@ -53,71 +51,21 @@ DisplayRow(size=10, background char=Char(32))
 
 julia> label[1:end] = str
 "會動的字串"
-
-julia> l_color = (82, 190, 128); l_style = Symbol[]; label_pos = (5, 5);
 ```
 
-4. Declear a IO buffer for rendering
+4. Render area and label
 
 ```julia
-julia> buffer = IOBuffer();
-```
-
-5. Hide cursor
-
-```julia
-julia> DS.show_cursor(buffer, false)
-```
-
-6. Render area
-
-```julia
-julia> DS.set_style(buffer, a_style, a_color)
-
-julia> DS.render(buffer, area, pos=(1, 1))
-
-julia> DS.reset_style(buffer)
-```
-
-7. Render label
-
-```julia
-julia> DS.set_style(buffer, l_style, l_color)
-
-julia> DS.render(buffer, label, pos=label_pos)
-
-julia> DS.reset_style(buffer)
-```
-
-8. Reset cursor back to last line
-
-```julia
-julia> DS.move_cursor2last_line(buffer)
-```
-
-9. Show cursor
-
-```julia
-julia> DS.show_cursor(buffer, true)
-```
-
-10. Redirect IO from buffer to STDOUT
-
-```julia
-julia> write(stdout, take!(buffer))
+julia> DS.render(area, pos=(1, 1)); DS.render(label, pos=(5, 5))
 ```
 
 ![](gallery/usage.png)
 
+> **Hint: The result may be different from the picture showing above. One may need to integrate [Terming.jl](https://github.com/foldfelis/Terming.jl) to completely dominate terminal control.**
+
 ## Example
 
-The [example](example/example.jl) demostrates a minimum viable product
-that shows a border and a label.
-Integrate with
-[keyboard key reading feature](https://gist.github.com/foldfelis/375dc13b2d3be792fdf029466d7761d0),
-the movable label can be contraled by pressing `w` `s` `a` `d` .
-Pressing `ESC` to quit loop.
+The [example](example/example.jl) demonstrates a minimum viable product
+that shows a border and a string. Integrate with [keyboard key reading feature](https://gist.github.com/foldfelis/375dc13b2d3be792fdf029466d7761d0) (implemented under [Terming.jl](https://github.com/foldfelis/Terming.jl)), the movable string can be controlled by pressing `w`, `s`, `a` and `d`, press `ESC` to quit.
 
-The [style functions](src/util.jl#L43) defined under [util.jl](src/util.jl) provide a easy way to set font color and style.
-It is recommended that one use [Crayons](https://github.com/KristofferC/Crayons.jl) to gain more decorations.
-A [example](example/logo.jl) shows how to integrate with Crayons.
+It is recommended that one use [Crayons.jl](https://github.com/KristofferC/Crayons.jl) to gain more decorations. A [example](example/logo.jl) shows how to integrate with Crayons.
