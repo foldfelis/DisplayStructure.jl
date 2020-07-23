@@ -6,7 +6,7 @@ using Test
 
 @testset "DisplayStructure.jl" begin
 
-    T.set_term!(T.FakeTerminal(
+    T.set_term!(T.PseudoTerminal(
         Base.BufferStream(), Base.BufferStream(), Base.BufferStream()
     ))
 

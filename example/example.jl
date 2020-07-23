@@ -1,4 +1,3 @@
-using REPL
 using Crayons
 using DisplayStructure
 const DS = DisplayStructure
@@ -30,7 +29,7 @@ end
 
 function FormView(h::Int, w::Int)
     content = DS.DisplayArray(DS.Rectangle(h, w))
-    style = Crayon(foreground=(93, 173, 226), bold=true)
+    style = Crayon(foreground=:blue, bold=true)
     return FormView(content, style)
 end
 
@@ -44,7 +43,7 @@ function StrView(str::String)
     width = textwidth(str)
     content = DS.DisplayRow(width)
     content[1:end] = str
-    style = Crayon(foreground=(82, 190, 128))
+    style = Crayon(foreground=:green)
     return StrView(content, style, [5, 5])
 end
 
@@ -86,12 +85,14 @@ end
 
 function init_term()
     T.raw!(true)
+    T.alt_screen(true)
     T.cshow(false)
     T.clear()
 end
 
 function reset_term()
     T.raw!(false)
+    T.alt_screen(false)
     T.cshow(true)
 end
 
