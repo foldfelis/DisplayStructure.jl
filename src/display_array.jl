@@ -43,16 +43,36 @@ end
 
 function Base.setindex!(
     array::DisplayArray,
-    str::String,
+    str::AbstractString,
+    display_row::Int, display_col_range::UnitRange{Int64}
+)
+    array.content[display_row][display_col_range] = str
+end
+
+function Base.setindex!(
+    array::DisplayArray,
+    str::AbstractString,
     display_row_range::UnitRange{Int64}, display_col_range::UnitRange{Int64}
 )
+    str = padding_vertical(str, length(display_row_range))
     split_str = split(str, '\n')
-    length(split_str) == length(display_row_range) || throw(DimensionMismatch)
-    (display_row_range.stop > size(array)[1]) && (throw(BoundsError))
 
-    width = length(display_col_range)
     for (i, s) in zip(display_row_range, split_str)
-        array.content[i][display_col_range] = s
+        array[i, display_col_range] = s
+    end
+end
+
+function Base.setindex!(
+    array::DisplayArray,
+    str::AbstractString,
+    display_row_range::UnitRange{Int64}, display_col::Int
+)
+    str = padding_vertical(str, length(display_row_range))
+    split_str = split(str, '\n')
+
+    for (i, s) in zip(display_row_range, split_str)
+        (length(s) > 1) && throw(BoundsError)
+        array[i, display_col:(display_col+textwidth(s))] = s
     end
 end
 

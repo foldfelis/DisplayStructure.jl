@@ -8,3 +8,12 @@ function padding(str::AbstractString, width::Int; background=' ')
 
     return str
 end
+
+function padding_vertical(str::String, height::Int)
+    str_height = length(findall("\n", str))+1
+    (height < str_height) && (throw(BoundsError))
+
+    str *= '\n'^(height-str_height)
+
+    return str
+end

@@ -68,10 +68,7 @@ end
 
 function Base.setindex!(row::DisplayRow, str::AbstractString, display_range::UnitRange{Int64})
     start, stop = display_range.start, display_range.stop
-    width = length(display_range)
-    (width >= textwidth(str)) || (throw(BoundsError))
-
-    str = padding(str, width, background=row.background)
+    str = padding(str, length(display_range), background=row.background)
 
     i1, pre, _ = get_element_index(row, start)
     i2, _, post = get_element_index(row, stop)
