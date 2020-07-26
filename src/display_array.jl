@@ -52,7 +52,6 @@ function Base.setindex!(
 
     width = length(display_col_range)
     for (i, s) in zip(display_row_range, split_str)
-        s = padding(s, width, background=array.background)
         array.content[i][display_col_range] = s
     end
 end
