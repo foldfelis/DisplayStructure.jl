@@ -28,6 +28,8 @@ pkg> add DisplayStructure
 
 ## Usage
 
+### From scratch
+
 1. Using package
 
 ```julia
@@ -57,9 +59,40 @@ julia> label[1:end] = str
 julia> DS.render(area, pos=(1, 1)); DS.render(label, pos=(5, 5))
 ```
 
-![](gallery/usage.png)
+> **Hint: The result may be different from the picture showing bellow. One may need to integrate [Terming.jl](https://github.com/foldfelis/Terming.jl) to completely dominate terminal control.**
 
-> **Hint: The result may be different from the picture showing above. One may need to integrate [Terming.jl](https://github.com/foldfelis/Terming.jl) to completely dominate terminal control.**
+### With DisplayStack
+
+with `DisplayStack`, one can easily construct a hierarchical display structure.
+
+1. Using package
+
+```julia
+julia> using DisplayStructure; const DS = DisplayStructure;
+```
+
+
+2. Define a function that returns a `DisplayStack`
+
+```julia
+julia> function gen_form()
+    display_stack =  DS.DisplayStack()
+    push!(display_stack, :form => DS.Panel("Title", [20, 100], [1, 1]))
+    push!(display_stack, :str => DS.Label("會動的字串", [5, 5]))
+
+    return display_stack
+end;
+
+julia> form = gen_form();
+```
+
+3. Render it!!
+
+```julia
+julia> DS.render(form)
+```
+
+![](gallery/usage.png)
 
 ## Example
 

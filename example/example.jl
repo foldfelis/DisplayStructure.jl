@@ -1,4 +1,3 @@
-using Crayons
 using DisplayStructure
 const DS = DisplayStructure
 using Terming
@@ -6,45 +5,12 @@ const T = Terming
 
 ##### Views #####
 
-const RES = string(Crayon(reset=true))
+function gen_views(h, w, title, str)
+    display_stack =  DS.DisplayStack()
+    push!(display_stack, :form => DS.Panel(title, [h, w], [1, 1]))
+    push!(display_stack, :str => DS.Label(str, [5, 5]))
 
-abstract type View end
-
-function paint(stream::IO, view::View)
-    T.print(stream, view.style)
-    if hasfield(typeof(view), :pos)
-        DS.render(stream, view.content, pos=view.pos)
-    else
-        DS.render(stream, view.content, pos=(1, 1))
-    end
-    T.print(stream, RES)
-end
-
-paint(view::View) = paint(T.out_stream, view)
-
-struct FormView <: View
-    content::DS.DisplayArray
-    style::Crayon
-end
-
-function FormView(h::Int, w::Int)
-    content = DS.DisplayArray(DS.Rectangle(h, w))
-    style = Crayon(foreground=:blue, bold=true)
-    return FormView(content, style)
-end
-
-struct StrView <: View
-    content::DS.DisplayRow
-    style::Crayon
-    pos::Vector{Int}
-end
-
-function StrView(str::String)
-    width = textwidth(str)
-    content = DS.DisplayRow(width)
-    content[1:end] = str
-    style = Crayon(foreground=:green)
-    return StrView(content, style, [5, 5])
+    return display_stack
 end
 
 ##### Models #####
@@ -97,26 +63,26 @@ function reset_term()
 end
 
 struct App
-    views::Dict{Symbol, View}
+    views::DisplayStack
     model::Model
 end
 
 function App()
     h, w = T.displaysize()
+    title = " Title "
     str = "會動的字串"
+
     return App(
-        Dict(:form=>FormView(h, w), :str=>StrView(str)),
+        gen_views(h, w, title, str),
         MovableStr(2:(h-1), 2:(w-1-textwidth(str)+1))
     )
 end
 
-paint(app::App) = T.buffered() do buffer
-    foreach(view->paint(buffer, view.second), app.views)
-end
+render(app::App) = DS.render(app.views)
 
 function update(app::App)
     app.views[:str].pos .= app.model.pos
-    paint(app)
+    render(app)
 end
 
 function handle_quit(::App)
@@ -146,7 +112,7 @@ end
 
 function Base.run(app::App)
     init_term()
-    paint(app)
+    render(app)
     handle_event(app)
     reset_term()
     return
