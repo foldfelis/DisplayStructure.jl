@@ -16,6 +16,10 @@ function Base.push!(stack::DisplayStack, e::Pair)
     push!(stack.elements, e)
 end
 
+function Base.push!(stack::DisplayStack, e::DisplayObj)
+    push!(stack.elements, gensym("component")=>e)
+end
+
 function Base.getindex(stack::DisplayStack, key::Symbol)
     return stack.elements[key]
 end
