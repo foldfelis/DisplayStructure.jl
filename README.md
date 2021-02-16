@@ -3,13 +3,11 @@
     <br>
 </h1>
 
-| **Build Status**                                              |
-|:-------------------------------------------------------------:|
-| [![][travis-img]][travis-url] [![][codecov-img]][codecov-url] |
+| **Build Status**                                 |
+|:------------------------------------------------:|
+| ![CI][github-ci] [![][codecov-img]][codecov-url] |
 
-[travis-img]: https://travis-ci.com/foldfelis/DisplayStructure.jl.svg?branch=master
-
-[travis-url]: https://travis-ci.com/github/foldfelis/DisplayStructure.jl
+[github-ci]: https://github.com/foldfelis/DisplayStructure.jl/workflows/CI/badge.svg
 
 [codecov-img]: https://codecov.io/gh/foldfelis/DisplayStructure.jl/branch/master/graph/badge.svg
 
